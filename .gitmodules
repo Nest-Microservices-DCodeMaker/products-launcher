@@ -4,3 +4,6 @@
 [submodule "client-gatewaycls"]
 	path = client-gatewaycls
 	url = https://github.com/Nest-Microservices-DCodeMaker/client-gateway.git
+[submodule "products-ms"]
+	path = products-ms
+	url = https://github.com/Nest-Microservices-DCodeMaker/product-microservice.git
