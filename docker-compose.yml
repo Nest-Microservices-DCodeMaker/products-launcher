@@ -3,6 +3,8 @@ version: '3'
 services:
   nats-server:
     image: nats:2.11.6-alpine3.22
+    ports:
+      - 8222:8222
   
   client-gateway:
     build: ./client-gateway
@@ -51,3 +53,22 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=ordersdb
+
+# ========================
+# Payments Microservice
+# ========================
+  payments-ms:
+    container_name: payments-ms
+    build: ./payments-ms
+    volumes:
+      - ./payments-ms/src:/usr/src/app/src
+    ports:
+      - ${PAYMENTS_MS_PORT}:${PAYMENTS_MS_PORT}
+    command: npm run start:dev
+    environment:
+      - PORT=${PAYMENTS_MS_PORT}
+      - NATS_SERVERS=nats://nats-server:4222
+      - STRIPE_SECRET=${PAYMENTS_MS_STRIPE_SECRET}
+      - STRIPE_SUCCESS_URL=${PAYMENTS_MS_STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${PAYMENTS_MS_STRIPE_CANCEL_URL}
+      - STRIPE_ENDPOINT_SECRET=${PAYMENTS_MS_STRIPE_ENDPOINT_SECRET}
