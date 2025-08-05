@@ -76,6 +76,8 @@ services:
 # Payments Microservice
 # ========================
   auth-ms:
+    depends_on:
+      - auth-db
     container_name: auth-ms
     build: ./auth-ms
     volumes:
@@ -83,3 +85,15 @@ services:
     command: npm run start:dev
     environment:
       - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${AUTH_DB_DATABASEURL}
+
+  auth-db:
+    container_name: auth_database
+    image: mongo:5
+    restart: always
+    volumes:
+      - ./auth-ms/mongo:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGODB_DATABASE: authDB
