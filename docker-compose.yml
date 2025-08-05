@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   nats-server:
     image: nats:2.11.6-alpine3.22
@@ -73,7 +71,7 @@ services:
       - STRIPE_CANCEL_URL=${PAYMENTS_MS_STRIPE_CANCEL_URL}
       - STRIPE_ENDPOINT_SECRET=${PAYMENTS_MS_STRIPE_ENDPOINT_SECRET}
 # ========================
-# Payments Microservice
+# Auth Microservice
 # ========================
   auth-ms:
     depends_on:
@@ -86,6 +84,7 @@ services:
     environment:
       - NATS_SERVERS=nats://nats-server:4222
       - DATABASE_URL=${AUTH_DB_DATABASEURL}
+      - JWT_SECRET=${JWT_SECRET}
 
   auth-db:
     container_name: auth_database
