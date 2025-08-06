@@ -3,12 +3,12 @@ services:
     image: nats:2.11.6-alpine3.22
    
   client-gateway:
+    image: southamerica-west1-docker.pkg.dev/tienda-microservices-468217/image-registry/client-gateway
     build:
       context: ./client-gateway
       dockerfile: dockerfile.prod
     ports:
       - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
-    image: client-gateway-prod
     environment:
       - PORT=${CLIENT_GATEWAY_PORT}
       - NATS_SERVERS=nats://nats-server:4222
@@ -16,7 +16,7 @@ services:
 # Auth Microservice
 # ========================
   auth-ms:
-    image: auth-ms
+    image: southamerica-west1-docker.pkg.dev/tienda-microservices-468217/image-registry/auth-ms
     build:
       context: ./auth-ms
       dockerfile: dockerfile.prod
@@ -26,7 +26,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
 
   products-ms:
-    image: products-ms
+    image: southamerica-west1-docker.pkg.dev/tienda-microservices-468217/image-registry/products-ms
     build:
       context: ./products-ms
       dockerfile: dockerfile.prod
@@ -41,7 +41,7 @@ services:
 # Payments Microservice
 # ========================
   payments-ms:
-    image: payments-ms
+    image: southamerica-west1-docker.pkg.dev/tienda-microservices-468217/image-registry/payments-ms
     build:
       context: ./payments-ms
       dockerfile: dockerfile.prod
@@ -59,7 +59,7 @@ services:
 # Orders Microservice
 # ========================
   orders-ms:
-    image: orders-ms
+    image: southamerica-west1-docker.pkg.dev/tienda-microservices-468217/image-registry/orders-ms
     build:
       context: ./orders-ms
       dockerfile: dockerfile.prod
