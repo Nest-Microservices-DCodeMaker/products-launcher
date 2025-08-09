@@ -16,41 +16,49 @@ services:
       - NATS_SERVERS=nats://nats-server:4222
 
   products-ms:
-    build: ./products-ms  
+    build:
+      context: ./products-ms
+      dockerfile: dockerfile
+      args:
+        - PRODUCTS_DATABASE_URL=${PRODUCTS_DATABASE_URL}
     volumes:
       - ./products-ms/src:/usr/src/app/src
     command: npm run start:dev
     environment:
       - PORT=3001
       - NATS_SERVERS=nats://nats-server:4222
-      - DATABASE_URL=file:./dev.db
+      - DATABASE_URL=${PRODUCTS_DATABASE_URL}
 
   # Orders MS -> orders-ms
   orders-ms:
-    depends_on:
-      - orders-db
-    build: ./orders-ms
+    # depends_on:
+    #   - orders-db
+    build:
+      context: ./orders-ms
+      dockerfile: dockerfile
+      args:
+        - ORDERS_DATABASE_URL=${ORDERS_DATABASE_URL}
     volumes:
       - ./orders-ms/src:/usr/src/app/src
     command: npm run start:dev
     environment:
       - PORT=3002
       - NATS_SERVERS=nats://nats-server:4222
-      - DATABASE_URL=postgresql://postgres:123456@orders-db:5432/ordersdb?schema=public
+      - DATABASE_URL=${ORDERS_DATABASE_URL}
 
   # Orders DB -> order-db
-  orders-db:
-    container_name: orders_database
-    image: postgres:17.5
-    restart: always
-    volumes:
-      - ./orders-ms/postgres:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=ordersdb
+  # orders-db:
+  #   container_name: orders_database
+  #   image: postgres:17.5
+  #   restart: always
+  #   volumes:
+  #     - ./orders-ms/postgres:/var/lib/postgresql/data
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=123456
+  #     - POSTGRES_DB=ordersdb
 
 # ========================
 # Payments Microservice
@@ -74,8 +82,8 @@ services:
 # Auth Microservice
 # ========================
   auth-ms:
-    depends_on:
-      - auth-db
+    # depends_on:
+    #   - auth-db
     container_name: auth-ms
     build: ./auth-ms
     volumes:
@@ -86,13 +94,13 @@ services:
       - DATABASE_URL=${AUTH_DATABASEURL}
       - JWT_SECRET=${JWT_SECRET}
 
-  auth-db:
-    container_name: auth_database
-    image: mongo:5
-    restart: always
-    volumes:
-      - ./auth-ms/mongo:/data/db
-    ports:
-      - 27017:27017
-    environment:
-      MONGODB_DATABASE: authDB
+  # auth-db:
+  #   container_name: auth_database
+  #   image: mongo:5
+  #   restart: always
+  #   volumes:
+  #     - ./auth-ms/mongo:/data/db
+  #   ports:
+  #     - 27017:27017
+  #   environment:
+  #     MONGODB_DATABASE: authDB
